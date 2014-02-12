@@ -1,0 +1,32 @@
+
+body {
+    min-height: 665px;
+}
+
+.rightColumn {
+    position: fixed;
+    right: 280px;
+    width: 175px;
+}
+
+#dates {
+    top: 83px;
+}
+
+#importSet {
+    top: 223px;
+}
+
+#submitSet {
+    top: 332px;
+}
+
+button.submitBtn {
+    width: 170px;
+}
+
+footer {
+    position: fixed;
+    left: 0px;
+    bottom: 0px;
+}

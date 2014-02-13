@@ -10,7 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import generalbeans.AccessDB;
+import generalsax.XMLLector;
 
 /**
  * Reservarà una sèrie d'habitacions pels usuaris donats
@@ -64,24 +64,31 @@ public class CrearReserva extends HttpServlet {
             throws ServletException, IOException {
 
         final int places = Integer.parseInt(request.getParameter("placesVal"));
-        String[] noms = new String[places];
-        String[] emails = new String[places];
-        String[] dnis = new String[places];
-        String[] nacionalitats = new String[places];
-        int[] tipus = new int[places];
         String dataIni = request.getParameter("dataIni");
         String dataFi = request.getParameter("dataFi");
-        
+        StringBuilder sb = new StringBuilder();
+        sb.append("<reserva>");
         //Guardam tots els paràmetres ordenadament
         for (int i = 0; i < places; i++) {
-            noms[i] = request.getParameter("nom-" + i);
-            emails[i] = request.getParameter("mail-" + i);
-            dnis[i] = request.getParameter("dni-" + i);
-            nacionalitats[i] = request.getParameter("nac-" + i);
-            tipus[i] = Integer.parseInt(request.getParameter("tip-" + i));
+            sb.append("<hoste>");
+            sb.append("<nom>"); sb.append(request.getParameter("nom-" + i)); sb.append("</nom>");
+            sb.append("<mail>"); sb.append(request.getParameter("mail-" + i)); sb.append("</mail>");
+            sb.append("<dni>"); sb.append(request.getParameter("dni-" + i)); sb.append("</dni>");
+            sb.append("<nac>"); sb.append(request.getParameter("nac-" + i)); sb.append("</nac>");
+            sb.append("<tip>"); sb.append(request.getParameter("tip-" + i)); sb.append("</tip>");
+            sb.append("</hoste>");
         }
+        sb.append("<dataini>").append(dataIni).append("</dataini>");
+        sb.append("<datafi>").append(dataFi).append("</datafi>");
+        sb.append("</reserva>");
         
-        if (new AccessDB().crearReserva(noms, emails, dnis, nacionalitats, tipus, dataIni, dataFi)) {
+        webservice.ConnexioHotel_Service servei = new webservice.ConnexioHotel_Service();
+        webservice.ConnexioHotel port = servei.getConnexioHotelPort();
+        String reserva = port.crearReserva(sb.toString());
+        StringBuilder res = new StringBuilder();
+        new XMLLector().comprovarCreacioReserva(reserva, res);
+        
+        if (res.toString().equals("true")) {
             request.getSession().setAttribute("preu", request.getParameter("preuFinal"));
             response.sendRedirect("reservaOk/reservaOk.jsp");
         } else {

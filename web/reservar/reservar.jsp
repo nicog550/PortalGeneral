@@ -19,8 +19,8 @@
         String inici, fi, email, nac, dni, tip, preuPers;
         inici = fi = email = nac = dni = tip = preuPers = "";
         int places = 0;
-        HashMap tipus;
-        tipus = new HashMap();
+        HashMap tipus, paisos;
+        tipus = paisos = new HashMap();
         if (!"POST".equalsIgnoreCase(request.getMethod())) {
             response.sendRedirect("../home/home.jsp");
         } else {
@@ -28,6 +28,7 @@
             fi = request.getParameter("fi");
             places = Integer.parseInt(request.getParameter("num"));
             tipus = db.getTipusUsuaris();
+            paisos = db.getPaisos();
             email = (String)session.getAttribute("email");
             nac = (String)session.getAttribute("nacionalitat");
             dni = (String)session.getAttribute("dni");
@@ -52,15 +53,14 @@
                     <fieldset class="left">
                         <legend>Informació dels usuaris</legend>
                         <div><%
-                            Iterator<String> iteradorTipus;
+                            Iterator<String> iteradorTipus, iteradorPais;
                             for (int i = 0; i < places; i++) { %>
                                 <div id="hoste-<%=i%>" class="host">
                                     <span>HOSTE <%=i + 1%>:</span>
                                     <div class="row">
                                         <div class="inlineBlock">
                                             <label for="nom-<%=i%>">Nom</label>
-                                            <input type="text" id="nom-<%=i%>" name="nom-<%=i%>" style="width: 250px;"
-                                                   value="<%=(i == 0 && nom != null) ? nom : ""%>"/>
+                                            <input type="text" id="nom-<%=i%>" name="nom-<%=i%>" style="width: 250px;" />
                                         </div>
                                         <div class="inlineBlock">
                                             <label for="mail-<%=i%>">Email</label>
